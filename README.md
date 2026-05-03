@@ -4,7 +4,7 @@ NetPractice is a browser-based networking practice project. It runs as a static 
 
 ## Online Access
 
-Open the live site here: . You can click this link to open the project directly in your browser. For the best experience, use Chrome on desktop.
+Open the live site here: https://terminal-42s.github.io/netpractice/. You can click this link to open the project directly in your browser. For the best experience, use Chrome on desktop.
 
 ## What It Does
 
@@ -48,3 +48,7 @@ http://localhost:8000
 
 - The addresses and network architectures used in the levels are fictitious.
 - The project is designed to be lightweight and easy to share as a static site.
+
+## Disclaimer
+
+**For Practice Only** — This tool is deployed for educational and practice purposes only. I do not own this tool. All rights reserved to 42 School / 42 Network.
