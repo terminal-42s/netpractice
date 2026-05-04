@@ -35,6 +35,16 @@ function start_eval()
 	setTimeout(()=>{ window.location = 'level'+levels[0]+'.html'; }, 100);
 }
 
+function go_to_level(level_num)
+{
+	var login = document.getElementById('input_login').value.trim();
+	localStorage.setItem("g_saved_login", login);
+	localStorage.setItem("g_my_login", login);
+	localStorage.removeItem("g_my_eval");
+	localStorage.removeItem("g_eval_start_time");
+	setTimeout(()=>{ window.location = 'level'+level_num+'.html'; }, 100);
+}
+
 
 function load_login()
 {
@@ -47,7 +57,7 @@ function load_login()
 
 function showTab(nb)
 {
-	for (let i = 0; i < 2; i++)
+	for (let i = 0; i < 3; i++)
 	{
 		if (i == nb)
 		{
