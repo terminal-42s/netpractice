@@ -334,19 +334,32 @@ function load_board()
 			g_eval_lvls = [];
     
     // Initialize evaluation timer
-    if (g_my_login == '' && g_eval_lvls.length > 0)
+    console.log("DEBUG: g_my_login='"+g_my_login+"', g_eval_lvls.length="+g_eval_lvls.length);
+    if (g_my_login == '' && g_eval_lvls && g_eval_lvls.length > 0)
     {
+        console.log("DEBUG: Starting evaluation timer");
         var stored_time = localStorage.getItem("g_eval_start_time");
+        console.log("DEBUG: stored_time="+stored_time);
         if (stored_time)
             g_eval_start_time = parseInt(stored_time);
         
         // Display timer if in evaluation mode
         var timer_div = document.getElementById('timer_id');
+        console.log("DEBUG: timer_div exists=", timer_div !== null);
         if (timer_div)
         {
+            console.log("DEBUG: Initializing timer display");
             update_eval_timer();
             g_eval_timer_interval = setInterval(update_eval_timer, 100);
         }
+        else
+        {
+            console.log("DEBUG: timer_id element not found on page");
+        }
+    }
+    else
+    {
+        console.log("DEBUG: Not in evaluation mode");
     }
     
     var root = document.getElementById("root_id");
