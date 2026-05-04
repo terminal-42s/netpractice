@@ -5,6 +5,8 @@ var g_rand_prev;
 var g_rand_repl = [];
 var g_eval_lvls;
 var g_logs_open = 0;
+var g_eval_timer_interval = null;
+var g_eval_start_time = null;
 
 function my_console_log(str)
 {
@@ -331,6 +333,22 @@ function load_board()
 		if (!(g_eval_lvls = JSON.parse(localStorage.getItem("g_my_eval"))))
 			g_eval_lvls = [];
     
+    // Initialize evaluation timer
+    if (g_my_login == '' && g_eval_lvls.length > 0)
+    {
+        var stored_time = localStorage.getItem("g_eval_start_time");
+        if (stored_time)
+            g_eval_start_time = parseInt(stored_time);
+        
+        // Display timer if in evaluation mode
+        var timer_div = document.getElementById('timer_id');
+        if (timer_div)
+        {
+            update_eval_timer();
+            g_eval_timer_interval = setInterval(update_eval_timer, 100);
+        }
+    }
+    
     var root = document.getElementById("root_id");
 
     hosts.forEach(elem => show_host(root, elem));
@@ -356,4 +374,63 @@ function load_board()
 		}
 		g_logs_open = 1-g_logs_open;
 	}
+}
+
+function update_eval_timer()
+{
+    var timer_div = document.getElementById('timer_id');
+    if (!timer_div || !g_eval_start_time)
+        return;
+    
+    var elapsed = (Date.now() - g_eval_start_time) / 1000; // in seconds
+    var remaining = 15 * 60 - elapsed; // 15 minutes = 900 seconds
+    
+    if (remaining <= 0)
+    {
+        // Time's up! Close evaluation
+        if (g_eval_timer_interval)
+            clearInterval(g_eval_timer_interval);
+        timer_div.innerHTML = '<span style="color:red;"><b>Time\'s Up!</b></span>';
+        setTimeout(() => {
+            localStorage.removeItem("g_my_eval");
+            localStorage.removeItem("g_eval_start_time");
+            window.location = 'end.html';
+        }, 500);
+        return;
+    }
+    
+    var minutes = Math.floor(remaining / 60);
+    var seconds = Math.floor(remaining % 60);
+    var hundredths = Math.floor((remaining % 1) * 100);
+    
+    var time_str = (minutes < 10 ? '0' : '') + minutes + ':' + 
+                   (seconds < 10 ? '0' : '') + seconds + '.' + 
+                   (hundredths < 10 ? '0' : '') + hundredths;
+    
+    var color = remaining > 60 ? '#0000C0' : (remaining > 30 ? '#C0A000' : '#C00000');
+    timer_div.innerHTML = '<b style="color:' + color + '; font-size:120%;">Time: ' + time_str + '</b>';
+}
+
+function next_eval()
+{
+    if (!g_eval_lvls || g_eval_lvls.length === 0)
+        return 'index.html';
+    
+    // Remove current level from the list
+    g_eval_lvls.shift();
+    
+    if (g_eval_lvls.length === 0)
+    {
+        // All levels completed
+        localStorage.removeItem("g_my_eval");
+        localStorage.removeItem("g_eval_start_time");
+        if (g_eval_timer_interval)
+            clearInterval(g_eval_timer_interval);
+        return 'end.html';
+    }
+    
+    // Save updated list
+    localStorage.setItem("g_my_eval", JSON.stringify(g_eval_lvls));
+    
+    return 'level' + g_eval_lvls[0] + '.html';
 }

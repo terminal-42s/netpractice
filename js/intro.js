@@ -17,10 +17,22 @@ function save_login()
 
 function start_eval()
 {
-	var lvl = Math.round(6 + 4*Math.random());
+	// Generate 3 random levels from 6 to 10
+	var levels = [];
+	while(levels.length < 3) {
+		var lvl = Math.floor(6 + Math.random() * 5); // Random between 6-10
+		if (!levels.includes(lvl)) {
+			levels.push(lvl);
+		}
+	}
+	// Sort them for better UX
+	levels.sort();
+	
     localStorage.setItem("g_my_login", '');
-	localStorage.setItem("g_my_eval", JSON.stringify([lvl]));
-	setTimeout(()=>{ window.location = 'level'+lvl+'.html'; }, 100);
+	localStorage.setItem("g_my_eval", JSON.stringify(levels));
+	localStorage.setItem("g_eval_start_time", Date.now());
+	
+	setTimeout(()=>{ window.location = 'level'+levels[0]+'.html'; }, 100);
 }
 
 
